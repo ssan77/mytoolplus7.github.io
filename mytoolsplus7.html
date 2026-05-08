@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مركز الأدوات بلس | النسخة الاحترافية</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+:root{--bg:#080718;--glass:rgba(25, 25, 45, 0.85);--primary:#00f2fe;--secondary:#764ba2;--txt:#fff;--err:#ff4757;--glow:0 0 20px rgba(0, 242, 254, 0.4);--card:rgba(255,255,255,0.04)}
+body.light-mode{--bg:#f0f2f5;--glass:rgba(255, 255, 255, 0.96);--txt:#2d3436;--primary:#0984e3;--secondary:#6c5ce7;--card:rgba(0,0,0,0.06)}
+*{box-sizing:border-box;font-family:'Tajawal',sans-serif;transition:0.3s cubic-bezier(0.4, 0, 0.2, 1)}
+body{background:var(--bg);margin:0;padding:20px 10px;color:var(--txt);min-height:100vh;display:flex;justify-content:center;background-attachment:fixed}
+
+.app-box{background:var(--glass);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.1);width:100%;max-width:540px;border-radius:40px;box-shadow:0 30px 80px rgba(0,0,0,0.6);position:relative;margin-top:20px;display:flex;flex-direction:column;overflow:hidden}
+
+/* هيدر ثابت ومنظم بعيداً عن الأيقونة */
+.sticky-top{
+    position: sticky; top: 0; z-index: 1000;
+    background: var(--glass); backdrop-filter: blur(30px);
+    padding: 30px 30px 10px 30px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.theme-toggle{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--txt);width:45px;height:45px;border-radius:15px;display:flex;justify-content:center;align-items:center;cursor:pointer;position:absolute;top:25px;left:25px;z-index:1001}
+
+.app-header{margin:0 0 25px 0;padding-right:85px;text-align:right}
+.app-header h1{font-size:24px;font-weight:900;margin:0;background:linear-gradient(to right,var(--primary),#4facfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.nav-tabs{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex:0 0 auto;padding:12px 18px;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:20px;color:var(--txt);font-size:13px;font-weight:700;cursor:pointer;opacity:0.6}
+.tab-btn.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;opacity:1;border-color:transparent;box-shadow:var(--glow)}
+
+.scroll-area{padding: 20px 30px 30px 30px; overflow-y: auto; flex-grow: 1;}
+.tab-content{display:none;animation:fadeUp 0.5s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.tool-desc{background:rgba(0,242,254,0.08);border-right:5px solid var(--primary);padding:12px;border-radius:12px;font-size:12px;margin-bottom:20px;color:var(--primary);line-height:1.5}
+.input-group{margin-bottom:15px}
+label{display:block;margin-bottom:8px;font-size:13px;font-weight:900;color:var(--primary)}
+input,select{width:100%;padding:14px;background:rgba(15,23,42,0.6);border:2px solid rgba(255,255,255,0.1);border-radius:18px;color:#fff;font-size:15px;outline:none}
+body.light-mode input,body.light-mode select{background:#fdfdfd;color:#333;border-color:#d1d5db}
+
+.main-btn{width:100%;padding:16px;background:linear-gradient(to right,var(--primary),#0072ff);color:#fff;border:none;border-radius:18px;font-size:17px;font-weight:900;cursor:pointer;margin-top:10px;box-shadow:0 8px 25px rgba(0,114,255,0.3)}
+.main-btn:active{transform:scale(0.96)}
+
+.result-box{margin-top:20px;display:none}
+.res-card{background:var(--card);border-radius:25px;padding:25px;border:1px solid rgba(0,242,254,0.3);text-align:center}
+.res-grid{display:flex;justify-content:center;gap:12px;margin-top:15px}
+.grid-item{flex:1;background:rgba(255,255,255,0.05);padding:12px;border-radius:15px;border-bottom:3px solid var(--primary)}
+.grid-item span{display:block;font-size:22px;font-weight:900;color:var(--primary)}
+.grid-item small{font-size:11px;color:var(--txt);opacity:0.8}
+
+.ai-study-box{background:rgba(255,255,255,0.04);padding:15px;border-radius:15px;margin-top:15px;border-right:4px solid var(--secondary);text-align:right}
+.ai-study-box h4{margin:0 0 5px 0;color:var(--primary);font-size:14px;font-weight:900}
+.ai-study-box p{margin:0;font-size:13px;line-height:1.6;opacity:0.9}
+.ai-badge-time{display:inline-block;padding:3px 10px;background:var(--secondary);color:#fff;border-radius:6px;font-size:11px;margin-bottom:8px}
+
+.ai-signature{margin-top:15px;font-size:11px;color:var(--primary);opacity:0.8;font-weight:700}
+.res-err{border-color:var(--err);background:rgba(255,71,87,0.1)}
+.res-err h3{color:var(--err);margin:0;font-size:18px}
+</style>
+</head>
+<body>
+
+<div class="app-box">
+    <div class="sticky-top">
+        <div class="theme-toggle" onclick="toggleTheme()" id="themeIcon">☀️</div>
+        <div class="app-header"><h1>🚀 مركز الأدوات بلس</h1></div>
+        <div class="nav-tabs">
+            <button id="btn-calcDays" class="tab-btn active" onclick="switchTab('calcDays','btn-calcDays')">📅 الأيام</button>
+            <button id="btn-studyPlan" class="tab-btn" onclick="switchTab('studyPlan','btn-studyPlan')">🧠 المذاكرة</button>
+            <button id="btn-waterCalc" class="tab-btn" onclick="switchTab('waterCalc','btn-waterCalc')">💧 الماء</button>
+            <button id="btn-calcAge" class="tab-btn" onclick="switchTab('calcAge','btn-calcAge')">🎂 العمر</button>
+            <button id="btn-dataConvert" class="tab-btn" onclick="switchTab('dataConvert','btn-dataConvert')">💾 البيانات</button>
+        </div>
+    </div>
+
+    <div class="scroll-area">
+        <div id="calcDays" class="tab-content" style="display:block;">
+            <div class="tool-desc">حساب الفارق الزمني الشامل (سنوات، شهور، أيام) بين أي تاريخين.</div>
+            <div class="input-group"><label>تاريخ البداية:</label><input type="date" id="d1"></div>
+            <div class="input-group"><label>تاريخ النهاية:</label><input type="date" id="d2"></div>
+            <button class="main-btn" onclick="calculateDays()">تحليل الفرق الزمني</button>
+            <div id="resDays" class="result-box"></div>
+        </div>
+
+        <div id="studyPlan" class="tab-content">
+            <div class="tool-desc">محرك Comprehensive study Ai 📝 (الحد: 1000 صفحة).</div>
+            <div style="display:flex; gap:10px;">
+                <div class="input-group" style="flex:1;"><label>الصفحات:</label><input type="number" id="sPages" placeholder="0-1000"></div>
+                <div class="input-group" style="flex:1;"><label>الأيام المتاحة:</label><input type="number" id="sDays" placeholder="أيام"></div>
+            </div>
+            <div class="input-group">
+                <label>اختر الاستراتيجية العلمية:</label>
+                <select id="studyStrategy">
+                    <option value="spaced">التكرار المتباعد (Spaced Repetition)</option>
+                    <option value="active">الاستدعاء النشط (Active Recall)</option>
+                    <option value="feynman">تقنية فاينمان (الشرح المنهجي)</option>
+                    <option value="pomodoro">تقنية بومودورو (إدارة التركيز)</option>
+                    <option value="interleave">التعلم المتداخل (Interleaved Learning)</option>
+                </select>
+            </div>
+            <button class="main-btn" onclick="calculateSuperStudy()">بدء التحليل الذكي 🧠</button>
+            <div id="resStudy" class="result-box"></div>
+        </div>
+
+        <div id="waterCalc" class="tab-content">
+            <div class="tool-desc">تحليل الاحتياج المائي (العمر 5-110 | الوزن 20-250 كجم).</div>
+            <div style="display:flex; gap:10px;">
+                <div class="input-group" style="flex:1;"><label>العمر:</label><input type="number" id="wAge" placeholder="سنة"></div>
+                <div class="input-group" style="flex:1;"><label>الوزن (كجم):</label><input type="number" id="wWeight" placeholder="كجم"></div>
+            </div>
+            <button class="main-btn" onclick="calculateWater()">تحليل الاحتياج</button>
+            <div id="resWater" class="result-box"></div>
+        </div>
+
+        <div id="calcAge" class="tab-content">
+            <div class="tool-desc">حساب العمر الدقيق (مواليد 1926-2026).</div>
+            <div class="input-group"><label>تاريخ ميلادك:</label><input type="date" id="dob"></div>
+            <button class="main-btn" onclick="calculateAge()">بدء التحليل</button>
+            <div id="resAge" class="result-box"></div>
+        </div>
+
+        <div id="dataConvert" class="tab-content">
+            <div class="tool-desc">تحويل البيانات الشامل (من Bit إلى TB | الحد: 15 خانة).</div>
+            <div class="input-group"><label>القيمة:</label><input type="number" id="dataValue" oninput="if(this.value.length > 15) this.value = this.value.slice(0, 15);"></div>
+            <div style="display:flex; gap:10px;">
+                <select id="uFrom" style="flex:1;">
+                    <option value="1">Bit</option><option value="8">Byte</option><option value="8192">KB</option>
+                    <option value="8388608">MB</option><option value="8589934592">GB</option><option value="8796093022208">TB</option>
+                </select>
+                <select id="uTo" style="flex:1;">
+                    <option value="1">Bit</option><option value="8">Byte</option><option value="8192">KB</option>
+                    <option value="8388608">MB</option><option value="8589934592" selected>GB</option><option value="8796093022208">TB</option>
+                </select>
+            </div>
+            <button class="main-btn" onclick="convertData()">بدء التحويل</button>
+            <div id="resData" class="result-box"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleTheme(){
+    document.body.classList.toggle('light-mode');
+    document.getElementById('themeIcon').innerHTML = document.body.classList.contains('light-mode') ? '🌙' : '☀️';
+}
+function switchTab(tId,bId){
+    let contents = document.getElementsByClassName('tab-content');
+    for(let i=0; i<contents.length; i++) contents[i].style.display = 'none';
+    let btns = document.getElementsByClassName('tab-btn');
+    for(let i=0; i<btns.length; i++) btns[i].classList.remove('active');
+    document.getElementById(tId).style.display = 'block';
+    document.getElementById(bId).classList.add('active');
+    document.querySelector('.scroll-area').scrollTop = 0;
+}
+function showErr(id, msg) {
+    let r = document.getElementById(id);
+    r.style.display = "none";
+    r.innerHTML = `<div class='res-card res-err'><h3>خطأ في الإدخال</h3><p>${msg}</p></div>`;
+    r.style.display = "block";
+}
+
+function calculateDays(){
+    let r = document.getElementById('resDays'); r.style.display = "none"; // تصفير النتائج القديمة
+    let d1_v = document.getElementById('d1').value, d2_v = document.getElementById('d2').value;
+    if(!d1_v || !d2_v) return showErr('resDays', 'يرجى اختيار التاريخين.');
+
+    let d1 = new Date(d1_v);
+    let d2 = new Date(d2_v);
+    let diff = d2 - d1;
+    let absD = Math.abs(diff) / (1000 * 60 * 60 * 24);
+    
+    // خوارزمية حساب السنوات والشهور والأيام الدقيقة
+    let years = Math.floor(absD / 365.25);
+    let months = Math.floor((absD % 365.25) / 30.44);
+    let days = Math.floor((absD % 365.25) % 30.44);
+
+    let status = (diff >= 0) ? "⏳ فترة متبقية" : "🔙 فترة منقضية";
+    r.innerHTML = `<div class="res-card"><div class="res-grid"><div class="grid-item"><span>${years}</span><small>سنة</small></div><div class="grid-item"><span>${months}</span><small>شهر</small></div><div class="grid-item"><span>${days}</span><small>يوم</small></div></div><div class="res-status">${status}</div></div>`;
+    r.style.display = "block";
+}
+
+function calculateSuperStudy() {
+    let r = document.getElementById('resStudy'); r.style.display = "none"; // تصفير النتائج القديمة
+    let p = parseInt(document.getElementById('sPages').value), d = parseInt(document.getElementById('sDays').value);
+    let strat = document.getElementById('studyStrategy').value;
+    if(!p || !d || p <= 0 || d <= 0) return showErr('resStudy', 'يرجى إدخال أرقام صحيحة.');
+    if(p > 1000) return showErr('resStudy', 'عذراً: الحد الأقصى هو 1000 صفحة.');
+
+    let perDay = Math.ceil(p / d);
+    let hours = Math.ceil(perDay * 0.15); 
+    let advice = "";
+    if(strat === 'spaced') advice = "<h4>التكرار المتباعد</h4><p><b>المطلوب:</b> مذاكرة المحتوى اليوم، ثم مراجعته بعد 24 ساعة، ثم بعد 3 أيام لضمان عدم النسيان.</p>";
+    else if(strat === 'active') advice = "<h4>الاستدعاء النشط</h4><p><b>المطلوب:</b> لا تقرأ فقط، بل اسأل نفسك سؤالين بعد كل صفحة وحاول الإجابة غيباً.</p>";
+    else if(strat === 'feynman') advice = "<h4>تقنية فاينمان</h4><p><b>المطلوب:</b> تخيل أنك تشرح الدرس لشخص مبتدئ؛ إذا واجهت صعوبة في التبسيط، فعد للمذاكرة.</p>";
+    else if(strat === 'pomodoro') advice = "<h4>تقنية بومودورو</h4><p><b>المطلوب:</b> قسم وقتك إلى جلسات مدتها 25 دقيقة تركيز و 5 دقائق راحة.</p>";
+    else advice = "<h4>التعلم المتداخل</h4><p><b>المطلوب:</b> اخلط بين موضوعين مختلفين اليوم؛ هذا يحفز الدماغ على الربط بين المعلومات بشكل أعمق.</p>";
+
+    r.innerHTML = `<div class="res-card"><h3>${perDay} صفحة / يومياً</h3><span class='ai-badge-time'>الوقت المقدر: ${hours} ساعات يومياً</span><div class="ai-study-box">${advice}</div><div class='ai-signature'>بواسطة: Comprehensive study Ai 📝</div></div>`;
+    r.style.display = "block";
+}
+
+function calculateWater(){
+    let r = document.getElementById('resWater'); r.style.display = "none";
+    let age = parseInt(document.getElementById('wAge').value), w = parseFloat(document.getElementById('wWeight').value);
+    if(!age || !w || age < 5 || age > 110 || w < 20 || w > 250) return showErr('resWater', 'بيانات غير منطقية (عمر 5-110 | وزن 20-250).');
+    let l = (w * 0.035).toFixed(2);
+    r.innerHTML = `<div class="res-card"><h3>${l} لتر</h3><p>تعادل ${Math.ceil(l/0.25)} أكواب يومياً.</p></div>`;
+    r.style.display = "block";
+}
+
+function calculateAge(){
+    let r = document.getElementById('resAge'); r.style.display = "none";
+    let dobV = document.getElementById('dob').value;
+    if(!dobV) return showErr('resAge', 'يرجى تحديد التاريخ.');
+    let b = new Date(dobV);
+    if(b.getFullYear() < 1926 || b.getFullYear() > 2026) return showErr('resAge', 'النطاق المسموح 1926-2026 فقط.');
+    let age = new Date().getFullYear() - b.getFullYear();
+    r.innerHTML = `<div class="res-card"><h3>${age} عام</h3><p>تحليل العمر مكتمل بنجاح.</p></div>`;
+    r.style.display = "block";
+}
+
+function convertData(){
+    let r = document.getElementById('resData'); r.style.display = "none";
+    let v = document.getElementById('dataValue').value;
+    if(!v || v.length > 15) return showErr('resData', 'القيمة غير صالحة أو تجاوزت 15 خانة.');
+    let f = parseFloat(document.getElementById('uFrom').value), t = parseFloat(document.getElementById('uTo').value);
+    let res = (parseFloat(v) * f) / t;
+    r.innerHTML = `<div class="res-card"><h3>النتيجة</h3><p>${res.toLocaleString(undefined, {maximumFractionDigits: 5})} وحدة</p></div>`;
+    r.style.display = "block";
+}
+</script>
+</b
