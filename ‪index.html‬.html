@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز الأدوات بلس | النسخة الاحترافية</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-box">
+    <div class="sticky-header">
+        <div class="theme-toggle" onclick="toggleTheme()" id="themeIcon">☀️</div>
+        <div class="app-header"><h1>🚀 مركز الأدوات بلس</h1></div>
+        <div class="nav-tabs">
+            <button id="btn-calcDays" class="tab-btn active" onclick="switchTab('calcDays','btn-calcDays')">📅 الأيام</button>
+            <button id="btn-studyPlan" class="tab-btn" onclick="switchTab('studyPlan','btn-studyPlan')">🧠 المذاكرة</button>
+            <button id="btn-waterCalc" class="tab-btn" onclick="switchTab('waterCalc','btn-waterCalc')">💧 الماء</button>
+            <button id="btn-calcAge" class="tab-btn" onclick="switchTab('calcAge','btn-calcAge')">🎂 العمر</button>
+            <button id="btn-dataConvert" class="tab-btn" onclick="switchTab('dataConvert','btn-dataConvert')">💾 البيانات</button>
+        </div>
+    </div>
+    <div class="content-scroll">
+        <div id="calcDays" class="tab-content" style="display:block;">
+            <div class="input-group"><label>تاريخ البداية:</label><input type="date" id="d1"></div>
+            <div class="input-group"><label>تاريخ النهاية:</label><input type="date" id="d2"></div>
+            <button class="main-btn" onclick="calculateDays()">تحليل الفرق الزمني</button>
+            <div id="resDays" class="result-box"></div>
+        </div>
+        <div id="studyPlan" class="tab-content">
+            <div style="display:flex; gap:10px;">
+                <div class="input-group" style="flex:1;"><label>الصفحات:</label><input type="number" id="sPages" placeholder="0-1000"></div>
+                <div class="input-group" style="flex:1;"><label>الأيام:</label><input type="number" id="sDays" placeholder="أيام"></div>
+            </div>
+            <div class="input-group"><label>المنهجية العلمية:</label>
+                <select id="studyStrategy">
+                    <option value="spaced">التكرار المتباعد</option>
+                    <option value="active">الاستدعاء النشط</option>
+                    <option value="feynman">تقنية فاينمان</option>
+                    <option value="pomodoro">تقنية بومودورو</option>
+                    <option value="interleave">التعلم المتداخل</option>
+                </select>
+            </div>
+            <button class="main-btn" onclick="calculateSuperStudy()">توليد المخطط المنهجي</button>
+            <div id="resStudy" class="result-box"></div>
+        </div>
+        <div id="waterCalc" class="tab-content">
+            <div style="display:flex; gap:10px;">
+                <div class="input-group" style="flex:1;"><label>العمر:</label><input type="number" id="wAge"></div>
+                <div class="input-group" style="flex:1;"><label>الوزن (كجم):</label><input type="number" id="wWeight"></div>
+            </div>
+            <button class="main-btn" onclick="calculateWater()">تحليل الاحتياج</button>
+            <div id="resWater" class="result-box"></div>
+        </div>
+        <div id="calcAge" class="tab-content">
+            <div class="input-group"><label>تاريخ ميلادك:</label><input type="date" id="dob"></div>
+            <button class="main-btn" onclick="calculateAge()">بدء التحليل</button>
+            <div id="resAge" class="result-box"></div>
+        </div>
+        <div id="dataConvert" class="tab-content">
+            <div class="input-group"><label>القيمة الرقمية (حد 15 خانة):</label><input type="number" id="dataValue" oninput="if(this.value.length>15)this.value=this.value.slice(0,15);"></div>
+            <div style="display:flex; gap:10px;">
+                <select id="uFrom" style="flex:1;"><option value="1">Bit</option><option value="8">Byte</option><option value="8192">KB</option><option value="8388608">MB</option><option value="8589934592">GB</option><option value="8796093022208">TB</option></select>
+                <select id="uTo" style="flex:1;"><option value="1">Bit</option><option value="8">Byte</option><option value="8192">KB</option><option value="8388608">MB</option><option value="8589934592" selected>GB</option><option value="8796093022208">TB</option></select>
+            </div>
+            <button class="main-btn" onclick="convertData()">تحويل</button>
+            <div id="resData" class="result-box"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // جميع وظائف الجافا سكريبت تظل هنا لسهولة العمل
+    function toggleTheme(){document.body.classList.toggle('light-mode');document.getElementById('themeIcon').innerHTML=document.body.classList.contains('light-mode')?'🌙':'☀️'}
+    function switchTab(tId,bId){let contents=document.getElementsByClassName('tab-content');for(let i=0;i<contents.length;i++)contents[i].style.display='none';let btns=document.getElementsByClassName('tab-btn');for(let i=0;i<btns.length;i++)btns[i].classList.remove('active');document.getElementById(tId).style.display='block';document.getElementById(bId).classList.add('active');document.querySelector('.content-scroll').scrollTop=0}
+    function showErr(id,msg){let r=document.getElementById(id);r.style.display="none";r.innerHTML=`<div class='res-card res-err'><h3>تنبيه النظام</h3><p>${msg}</p></div>`;r.style.display="block"}
+
+    function calculateDays(){
+        let r=document.getElementById('resDays'); r.style.display="none"; r.innerHTML='';
+        let d1_v=document.getElementById('d1').value, d2_v=document.getElementById('d2').value;
+        if(!d1_v||!d2_v) return showErr('resDays','يرجى اختيار التواريخ.');
+        let d1=new Date(d1_v), d2=new Date(d2_v);
+        let diff=Math.abs(d2-d1)/(1000*60*60*24);
+        let y=Math.floor(diff/365.25), m=Math.floor((diff%365.25)/30.44), d=Math.floor((diff%365.25)%30.44);
+        r.innerHTML=`<div class="res-card"><div class="res-grid"><div class="grid-item"><span>${y}</span><small>سنة</small></div><div class="grid-item"><span>${m}</span><small>شهر</small></div><div class="grid-item"><span>${d}</span><small>يوم</small></div></div><div style="margin-top:15px;font-weight:700">${d2>=d1?"⏳ فترة متبقية":"🔙 فترة منقضية"}</div></div>`;
+        r.style.display="block";
+    }
+    function calculateSuperStudy(){
+        let r=document.getElementById('resStudy'); r.style.display="none"; r.innerHTML='';
+        let p=parseInt(document.getElementById('sPages').value), d=parseInt(document.getElementById('sDays').value), strat=document.getElementById('studyStrategy').value;
+        if(!p||!d||p<=0||d<=0) return showErr('resStudy','أدخل بيانات صحيحة.');
+        if(p>1000) return showErr('resStudy','الحد الأقصى 1000 صفحة.');
+        let perDay=Math.ceil(p/d), h=Math.ceil(perDay*0.15);
+        let advice="";
+        if(strat==='spaced')advice="<h4>التكرار المتباعد</h4><p>ذاكر اليوم، ثم راجع بعد 24 ساعة ثم بعد 3 أيام لضمان الحفظ.</p>";
+        else if(strat==='active')advice="<h4>الاستدعاء النشط</h4><p>اختبر نفسك غيباً بعد كل 5 صفحات لتقوية الروابط الذهنية.</p>";
+        else if(strat==='feynman')advice="<h4>تقنية فاينمان</h4><p>اشرح الدرس لنفسك بصوت عالٍ؛ إذا تعثرت في الشرح فأنت بحاجة للمراجعة.</p>";
+        else if(strat==='pomodoro')advice="<h4>بومودورو</h4><p>ذاكر 25 دقيقة تركيز تام وخذ 5 دقائق راحة بعيداً عن الجوال.</p>";
+        else advice="<h4>التعلم المتداخل</h4><p>اخلط بين موضوعين مختلفين اليوم لزيادة قدرة الدماغ على الربط.</p>";
+        r.innerHTML=`<div class="res-card"><h3>${perDay} صفحة / يومياً</h3><p style="color:var(--primary); font-size:12px">الوقت المقدر: ${h} ساعات</p><div class="ai-info-card">${advice}</div><div class="ai-signature">Comprehensive study Ai 📝</div></div>`;
+        r.style.display="block";
+    }
+    function calculateWater(){
+        let r=document.getElementById('resWater'); r.style.display="none"; r.innerHTML='';
+        let a=parseInt(document.getElementById('wAge').value), w=parseFloat(document.getElementById('wWeight').value);
+        if(!a||!w||a<5||a>110||w<20||w>250) return showErr('resWater','بيانات غير منطقية.');
+        let l=(w*0.035).toFixed(2);
+        r.innerHTML=`<div class="res-card"><h3>${l} لتر</h3><p>تعادل ${Math.ceil(l/0.25)} أكواب يومياً.</p></div>`;
+        r.style.display="block";
+    }
+    function calculateAge(){
+        let r=document.getElementById('resAge'); r.style.display="none"; r.innerHTML='';
+        let dobV=document.getElementById('dob').value;
+        if(!dobV) return showErr('resAge','اختر التاريخ.');
+        let b=new Date(dobV), now=new Date();
+        if(b.getFullYear()<1926||b.getFullYear()>now.getFullYear()) return showErr('resAge','التاريخ خارج النطاق.');
+        let age=now.getFullYear()-b.getFullYear();
+        r.innerHTML=`<div class="res-card"><h3>${age} عام</h3><p>تحليل العمر مكتمل.</p></div>`;
+        r.style.display="block";
+    }
+    function convertData(){
+        let r=document.getElementById('resData'); r.style.display="none"; r.innerHTML='';
+        let v=document.getElementById('dataValue').value, f=parseFloat(document.getElementById('uFrom').value), t=parseFloat(document.getElementById('uTo').value);
+        if(!v||v.length>15) return showErr('resData','القيمة غير صالحة.');
+        let res=(parseFloat(v)*f)/t;
+        r.innerHTML=`<div class="res-card"><h3>النتيجة</h3><p>${res.toLocaleString(undefined,{maximumFractionDigits:5})} وحدة</p></div>`;
+        r.style.display="block";
+    }
+</script>
+</body>
+</html>
